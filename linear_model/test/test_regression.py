@@ -7,7 +7,7 @@ Created on Sat Dec  1 12:06:55 2018
 
 from linear_model.LinearRegression import LinearRegression
 from linear_model.ridge import ridgeRegress
-from linear_model.LassoRegress import LassoRegress
+from linear_model.LassoRegress import LassoRegress, nonNegativeLasso
 from linear_model.Logit import LogisticRegress
 from linear_model.lwlr import lwlr
 import pandas as pd
@@ -33,3 +33,6 @@ yhat = [(X[i, :]*lwlr(X[i, :], X, y))[0, 0] for i in range(m)]
 rmse = np.sqrt(((y-yhat)**2).sum())/m
 print(rmse)
     
+nlasso = nonNegativeLasso()
+nlasso.fit(X, y)
+print(nlasso.coef_)
