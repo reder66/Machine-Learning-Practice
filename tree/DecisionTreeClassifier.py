@@ -49,7 +49,7 @@ def chooseBestFeatureToSplit(data):
 def majorityCnt(classList):
     classCnt = {}
     for i in classList:
-        classCnt = classCnt.get(i, 0) + 1
+        classCnt[i] = classCnt.get(i, 0) + 1
     return sorted(classCnt.items(), key = lambda x:x[1], reverse = True)[0][0]
 
 def createTree(data, colnames):

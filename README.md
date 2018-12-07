@@ -14,6 +14,7 @@ Let us become better!!!
 3. Ridge Regression
 4. Logistic Regression
 5. Locally Weighted Linear Regression
+6. Nonnegative Lasso
 
 ## neighbors
 
@@ -24,3 +25,18 @@ Let us become better!!!
 1. Decision Tree Classifier
 2. CART & Model Tree
 
+## cluster
+
+1. kmeans
+2. binary kmeans
+
+## ensemble
+
+1. Adaboost
+2. Random Forest
+
+Then we can define some metrics to measure the score of model.
+
+## metrics
+
+1. roc_curve

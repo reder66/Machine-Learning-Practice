@@ -18,6 +18,31 @@ def calErr(data):
     #以总方差为混乱度
     return np.var(data[:, -1])*data.shape[0]
 
+def meanLeafEval(model, inx):
+    return float(model)
+
+#%%
+def calGini(data):
+    y = data[:, -1]
+    n = len(y)
+    uniquey = set(y)
+    gini = 1
+    for i in uniquey:
+        num = len(y[y==i])
+        gini -= (num/n)**2
+    return gini
+
+def classifyLeaf(data):
+    y = data[:, -1]
+    classCnt = {}
+    for i in y:
+        classCnt[i] = classCnt.get(i, 0) + 1
+    return sorted(classCnt.items(), key = lambda x:x[1], reverse = True)[0][0]
+
+def classifyLeafEval(model, inx):
+    return model
+    
+#%%
 def linearSolve(data):
     #最小二乘估计
     #包含截距项
@@ -38,6 +63,13 @@ def modelErr(data):
     yhat = X*ws
     return np.sum(np.power(y-yhat, 2))
 
+def modelLeafEval(model, inx):
+    n = inx.shape[0]
+    X = np.matrix(np.ones((1, n+1)))
+    X[:,1:] = inx
+    return X*model
+
+#%%
 def chooseBestSplit(data, leafType, errType, min_samples_split, min_tol_split):
     '''
     leafType：叶节点模型
@@ -83,15 +115,8 @@ def createTree(data, leafType = meanLeaf, errType = calErr, min_samples_split = 
     retTree['right'] = createTree(mat1, leafType, errType, min_samples_split, min_tol_split)
     return retTree
 
-def meanLeafEval(model, inx):
-    return float(model)
-
-def modelLeafEval(model, inx):
-    n = inx.shape[0]
-    X = np.matrix(np.ones((1, n+1)))
-    X[:,1:] = inx
-    return X*model
-
+#%%
+#Prediction
 def istree(tree):
     return isinstance(tree, dict)
 
@@ -128,16 +153,18 @@ def treeForecast(tree, inx, leafEval = modelLeafEval):
             return treeForecast(tree['right'], inx, leafEval)
         else:
             return leafEval(tree['right'], inx)
+        
 #%%   
 class CART:
-    def __init__(self, tree_type = 'reg', prune_size = 0.2, min_samples_split = 1, min_tol_split = 0.0001):
+    def __init__(self, tree_type = 'reg', prune_size = 0.2,\
+                 min_samples_split = 2, min_tol_split = 1e-07):
         self.tree_type = tree_type
         self.prune_size = prune_size
         self.min_samples_split = min_samples_split
         self.min_tol_split = min_tol_split
-        self.eval = {'reg':meanLeafEval, 'model':modelLeafEval}
-        self.leafType = {'reg':meanLeaf, 'model':modelLeaf}
-        self.errType = {'reg':calErr, 'model':modelErr}
+        self.eval = {'reg':meanLeafEval, 'model':modelLeafEval, 'classify':classifyLeafEval}
+        self.leafType = {'reg':meanLeaf, 'model':modelLeaf, 'classify':classifyLeaf}
+        self.errType = {'reg':calErr, 'model':modelErr, 'classify':calGini}
         
     def fit(self, X, y): 
         data = np.column_stack((X, y))
@@ -155,10 +182,11 @@ class CART:
         self.tree = retTree
     
     def predict(self, X):
-        n = len(X)
-        yhat = np.matrix(np.zeros((n, 1)))
+        xMat = np.array(X)
+        n = len(xMat)
+        yhat = np.zeros((n, 1))
         for i in range(n):
-            yhat[i,0] = treeForecast(self.tree, X[i, :], self.eval[self.tree_type])
+            yhat[i,0] = treeForecast(self.tree, xMat[i, :], self.eval[self.tree_type])
         return yhat
     
 
