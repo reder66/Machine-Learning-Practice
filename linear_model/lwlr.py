@@ -9,4 +9,6 @@ def lwlr(inx, X, y, k=1.0):
     w = np.diag(np.exp(dist/(-2*k**2))) #计算权重矩阵
     w = np.matrix(w)
     xTx = xMat.T*w*xMat
+    if np.linalg.det(xTx)==0:
+        return np.linalg.pinv(xTx)*xMat.T*w*yMat
     return (xTx.I)*xMat.T*w*yMat

@@ -12,9 +12,9 @@ from linear_model.Logit import LogisticRegress
 from linear_model.lwlr import lwlr
 import pandas as pd
 
-df = pd.read_csv('data.csv')
-X = df.iloc[:,:2].values
-y = df.iloc[:,2].values
+df = pd.read_csv('house_data.csv')
+X = df.iloc[:,:-1].values
+y = df.iloc[:,-1].values
 m, n = X.shape
 
 lr = LinearRegression()
@@ -35,4 +35,5 @@ print(rmse)
     
 nlasso = nonNegativeLasso()
 nlasso.fit(X, y)
-print(nlasso.coef_)
+print(np.round(nlasso.coef_,2))
+

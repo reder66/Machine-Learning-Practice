@@ -7,6 +7,8 @@ class LinearRegression:
         self.X = xMat
         self.y = yMat
         xTx = xMat.T*xMat
+        if np.linalg.det(xTx)==0:
+            return np.linalg.pinv(xTx)*(xMat.T*yMat)
         w = xTx.I*(xMat.T*yMat)
         self.coef = w
     
