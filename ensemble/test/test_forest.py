@@ -15,3 +15,4 @@ yhat = rf.predict(x_test)
 score = (yhat==y_test).sum()/len(y_test)
 print('Testing score: %.4f'%score)
 print('OOB score: %.4f'%rf.oob_score)
+

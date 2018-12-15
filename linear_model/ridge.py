@@ -8,6 +8,8 @@ class ridgeRegress:
         yMat = np.matrix(y).T
         m = xMat.shape[1]
         xTx = xMat.T*xMat + self.lam*np.eye(m)
+        if np.linalg.det(xTx):
+            return np.linalg.pinv(xTx)*xMat.T*yMat
         w = xTx.I*xMat.T*yMat
         self.coef = w
     

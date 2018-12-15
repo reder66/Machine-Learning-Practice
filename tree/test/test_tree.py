@@ -34,4 +34,9 @@ cart_yhat = cart.predict(x_test.values)[:, 0]
 
 print('DecisionTreeClassifier training score: %.3f'%((dtc_yhat==y).sum()/len(y)))
 print('CART using gini testing score: %.3f'%((cart_yhat==y_test).sum()/len(y_test)))
-print(cart_yhat[0])
+print(cart.getTreeDepth(cart.tree))
+#%%
+cart1 = CART(tree_type='classify', max_depth=1)
+cart1.fit(x_train, y_train)
+print(cart1.getTreeDepth(cart1.tree))
+print(cart1.tree)

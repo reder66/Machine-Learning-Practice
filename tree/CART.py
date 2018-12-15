@@ -95,15 +95,15 @@ def chooseBestSplit(data, leafType, errType, min_samples_split, min_tol_split):
                 bestFeature = i
                 bestS = newS
                 bestVal = val
-    
+                
     if (baseS - bestS) < min_tol_split:
         return None, leafType(data)
     mat0, mat1 = binSplitData(data, bestFeature, bestVal)
     if (mat0.shape[0] < min_samples_split) or (mat1.shape[0] < min_samples_split):
         return None, leafType(data)
     return bestFeature, bestVal
-
-def createTree(data, leafType = meanLeaf, errType = calErr, min_samples_split = 1, min_tol_split = 0.0001):
+    
+def createTree(data, leafType, errType, min_samples_split, min_tol_split, max_depth, depth = 1):
     bestFeature, bestVal = chooseBestSplit(data, leafType, errType, min_samples_split, min_tol_split)
     if bestFeature==None:
         return bestVal
@@ -111,8 +111,12 @@ def createTree(data, leafType = meanLeaf, errType = calErr, min_samples_split = 
     retTree = {}
     retTree['splitFeature'] = bestFeature
     retTree['splitVal'] = bestVal
-    retTree['left'] = createTree(mat0, leafType, errType, min_samples_split, min_tol_split)
-    retTree['right'] = createTree(mat1, leafType, errType, min_samples_split, min_tol_split)
+    if max_depth != 'None' and depth >= max_depth:
+        retTree['left'] = leafType(mat0)
+        retTree['right'] = leafType(mat1)
+        return retTree
+    retTree['left'] = createTree(mat0, leafType, errType, min_samples_split, min_tol_split, max_depth, depth+1)
+    retTree['right'] = createTree(mat1, leafType, errType, min_samples_split, min_tol_split, max_depth, depth+1)
     return retTree
 
 #%%
@@ -157,10 +161,11 @@ def treeForecast(tree, inx, leafEval = modelLeafEval):
 #%%   
 class CART:
     def __init__(self, tree_type = 'reg', prune_size = 0.2,\
-                 min_samples_split = 2, min_tol_split = 1e-07):
+                 min_samples_split = 2, max_depth = 'None', min_tol_split = 1e-16):
         self.tree_type = tree_type
         self.prune_size = prune_size
         self.min_samples_split = min_samples_split
+        self.max_depth = max_depth
         self.min_tol_split = min_tol_split
         self.eval = {'reg':meanLeafEval, 'model':modelLeafEval, 'classify':classifyLeafEval}
         self.leafType = {'reg':meanLeaf, 'model':modelLeaf, 'classify':classifyLeaf}
@@ -168,25 +173,34 @@ class CART:
         
     def fit(self, X, y): 
         data = np.column_stack((X, y))
-        if prune and self.tree_type=='reg':
+        if self.prune_size and self.tree_type=='reg':
             np.random.shuffle(data)
             n_train = int(data.shape[0]*self.prune_size)
             train =  data[:n_train, :]
             test = data[n_train:, :]
             rawTree = createTree(train, self.leafType[self.tree_type], self.errType[self.tree_type], \
-                              self.min_samples_split, self.min_tol_split)
+                               self.min_samples_split, self.min_tol_split, self.max_depth)
             retTree = prune(rawTree, test)
         else:
             retTree = createTree(data, self.leafType[self.tree_type], self.errType[self.tree_type], \
-                              self.min_samples_split, self.min_tol_split)
+                               self.min_samples_split, self.min_tol_split, self.max_depth)
         self.tree = retTree
     
     def predict(self, X):
         xMat = np.array(X)
         n = len(xMat)
-        yhat = np.zeros((n, 1))
+        yhat = np.zeros(n)
         for i in range(n):
-            yhat[i,0] = treeForecast(self.tree, xMat[i, :], self.eval[self.tree_type])
+            yhat[i] = treeForecast(self.tree, xMat[i, :], self.eval[self.tree_type])
         return yhat
     
-
+    def getTreeDepth(self, tree):
+        maxdepth = 0
+        for i in ['left', 'right']:
+            if isinstance(tree.get(i, 0), dict):
+                depth = self.getTreeDepth(tree[i]) + 1
+            else:
+                depth = 1
+            if depth>maxdepth:
+                maxdepth = depth
+        return maxdepth
