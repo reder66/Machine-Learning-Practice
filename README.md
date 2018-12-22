@@ -34,11 +34,14 @@ Let us become better!!!
 
 1. Adaboost
 2. Random Forest
+<<<<<<< HEAD
 3. GBDT
 
 ## decomposition
 
 1. PCA
+=======
+>>>>>>> c2aa6b498595361963020c9b6296aa9cba1b0ffe
 
 Then we can define some metrics to measure the score of model.
 
