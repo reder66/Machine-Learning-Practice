@@ -35,11 +35,14 @@ Let us become better!!!
 1. Adaboost
 2. Random Forest
 <<<<<<< HEAD
+<<<<<<< HEAD
 3. GBDT
 
 ## decomposition
 
 1. PCA
+=======
+>>>>>>> c2aa6b498595361963020c9b6296aa9cba1b0ffe
 =======
 >>>>>>> c2aa6b498595361963020c9b6296aa9cba1b0ffe
 
