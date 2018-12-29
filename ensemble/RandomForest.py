@@ -66,13 +66,13 @@ class RandomForest:
     def predict(self, inx):
         X = np.array(inx)
         m = X.shape[0]
-        yhat = np.matrix(np.zeros((m, self.n_estimate)))
+        yhat = np.zeros((m, self.n_estimate))
         for i in range(self.n_estimate):
             x_test = X[:, self.feature[i]]
             yhat[:, i] = self.model[i].predict(x_test)
         result = []
         for i in range(m):
-            c = sorted(Counter(yhat.A[i, :]).items(), key=lambda x:x[1], reverse=True)[0][0]
+            c = sorted(Counter(yhat[i, :]).items(), key=lambda x:x[1], reverse=True)[0][0]
             result.append(c)
         return result
         

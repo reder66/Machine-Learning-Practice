@@ -15,6 +15,8 @@ Let us become better!!!
 4. Logistic Regression
 5. Locally Weighted Linear Regression
 6. Nonnegative Lasso
+7. SoftMax
+8. GDA
 
 ## neighbors
 
@@ -34,20 +36,21 @@ Let us become better!!!
 
 1. Adaboost
 2. Random Forest
-<<<<<<< HEAD
-<<<<<<< HEAD
 3. GBDT
 
 ## decomposition
 
 1. PCA
-=======
->>>>>>> c2aa6b498595361963020c9b6296aa9cba1b0ffe
-=======
->>>>>>> c2aa6b498595361963020c9b6296aa9cba1b0ffe
 
 Then we can define some metrics to measure the score of model.
 
 ## metrics
 
 1. roc_curve
+
+2. classification_report:
+   - confusion matrix
+   - precision, recall, F1_score
+   - kappa
+   - macro_average
+   - micro_average

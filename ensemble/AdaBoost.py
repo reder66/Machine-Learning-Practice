@@ -1,7 +1,7 @@
 import numpy as np
 
 def stumpClassify(subdata, threshVal, threshIneq):
-    result = np.zeros(len(subdata))
+    result = np.ones(len(subdata))
     if threshIneq == 'lt':
         result[subdata<=threshVal] = -1
     else:
@@ -48,8 +48,8 @@ class AdaBoost:
             alpha = 0.5*np.log((1-error)/max(error, 1e-16))
             submodel['alpha'] = alpha
             model.append(submodel)
-            D[np.abs(labelEst - yMat) == 2] *= np.exp(alpha)
-            D[np.abs(labelEst - yMat) == 0] *=  np.exp(-alpha)
+            D[np.abs(labelEst - yMat) == 2] *= np.exp(alpha) # correct
+            D[np.abs(labelEst - yMat) == 0] *=  np.exp(-alpha) # wrong
             D = D/D.sum()
             cur += alpha * labelEst
             cur = np.sign(cur)
