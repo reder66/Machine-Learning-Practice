@@ -37,6 +37,7 @@ Let us become better!!!
 1. Adaboost
 2. Random Forest
 3. GBDT
+4. stack_model
 
 ## decomposition
 
