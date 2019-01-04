@@ -43,6 +43,10 @@ Let us become better!!!
 
 1. PCA
 
+## association_rule
+
+1. Apriori
+
 Then we can define some metrics to measure the score of model.
 
 ## metrics
