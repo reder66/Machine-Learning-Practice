@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import numpy as np
 import pandas as pd
 from linear_model.GDA import GDA
 from sklearn.model_selection import train_test_split
@@ -11,7 +12,7 @@ x_train, x_test, y_train, y_test = train_test_split(X, y, train_size=0.75)
 
 gda = GDA()
 gda.fit(x_train, y_train)
-yhat = soft.predict(x_test)
+yhat = gda.predict(x_test)
 
 
 accuracy = np.sum(yhat==y_test)/x_test.shape[0]
