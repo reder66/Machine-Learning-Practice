@@ -6,6 +6,7 @@ Created on Wed Nov 28 16:08:42 2018
 """
 import numpy as np
 import pandas as pd
+
 def calEnt(data):
     #最后一列为label
     label = data[:, -1]
